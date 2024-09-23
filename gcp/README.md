@@ -1,6 +1,6 @@
 ﻿# INJI, one-click deployment on GCP
 
-![infra](assetsnji_architecture.png)
+![infra](assets/inji_architecture.png)
 
 ## Introduction
 
@@ -114,7 +114,7 @@ Currently, the below release version of the Helm charts will be deployed. The ve
 
 ### Infrastructure Deployment
 
-![deploy-approach](assetseploy-approach.png)
+![deploy-approach](assets/deploy-approach.png)
 
 ## Step-by-Step guide
 
