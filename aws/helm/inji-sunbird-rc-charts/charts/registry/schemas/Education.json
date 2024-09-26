@@ -1,0 +1,75 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+      "Education": {
+        "$ref": "#/definitions/Education"
+      }
+    },
+    "required": [
+      "Education"
+    ],
+    "title":"Education",
+    "definitions": {
+      "Education": {
+        "$id": "#/properties/Education",
+        "type": "object",
+        "title": "Education",
+        "required": [
+          "studentId",
+          "degree",
+          "university",
+          "percentage",
+          "fullName",
+          "dob"
+        ],
+        "properties": {
+          "studentId": {
+            "type": "string",
+            "title": "Student ID"
+          },
+          "fullName": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "dob": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "Male",
+              "Female",
+              "Other"
+            ]
+          },
+          "degree": {
+            "type": "string"
+          },
+          "university": {
+            "type": "string"
+          },
+          "percentage": {
+            "type": "string"
+          },
+          "mobile": {
+            "type": "string",
+            "title": "Mobile number"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email ID"
+          }
+        }
+      }
+    },
+    "_osConfig": {
+      "osComment": [],
+      "privateFields": [],
+      "signedFields": [],
+      "indexFields": [],
+      "uniqueIndexFields": [],
+      "roles": [],
+      "inviteRoles": []
+    }
+  }

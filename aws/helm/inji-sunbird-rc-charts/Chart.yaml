@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: 0.0.13
+description: A Helm chart for Sunbird RC
+name: inji_sunbird_rc_charts
+type: application
+version: 2.0.0
