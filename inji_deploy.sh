@@ -88,8 +88,8 @@ install_rc() {
   git clone https://github.com/tejash-jl/sunbird-rc-devops.git
   cp deployments/configs/.registry.env sunbird-rc-devops/deploy-as-code/helm/v2/registryAndCredentialling/helm_charts/.env
   rm -rf sunbird-rc-devops/deploy-as-code/helm/v2/registryAndCredentialling/helm_charts/charts/registry/schemas/*
-  cp deployments/schemas/Hospital.json sunbird-rc-devops/deploy-as-code/helm/v2/registryAndCredentialling/helm_charts/charts/registry/schemas
-  cp deployments/schemas/Hospital.json sunbird-rc-devops/deploy-as-code/helm/v2/registryAndCredentialling/helm_charts/charts/registry/schemas
+  cp deployments/schemas/*.json sunbird-rc-devops/deploy-as-code/helm/v2/registryAndCredentialling/helm_charts/charts/registry/schemas
+
 
   cd sunbird-rc-devops/deploy-as-code/helm/v2/registryAndCredentialling/helm_charts/
 
