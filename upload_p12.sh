@@ -24,6 +24,7 @@ upload_p12(){
 
   kubectl create secret generic mimotooidc -n esignet --from-file=oidckeystore.p12
   kubectl rollout restart deploy mimoto -n esignet
+  kubectl rollout restart deploy file-store -n esignet
 }
 
 get_input() {
