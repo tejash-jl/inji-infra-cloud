@@ -142,5 +142,68 @@ az login
 
 Run the below script to deploy INJI services
 ```bash
-curl -sL https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/inji_deploy.sh | bash -s -- 
+curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/inji_deploy.sh 
+bash inji_deploy.sh 
 ```
+
+
+### DEMO
+The postman collection (along with env config) has been provided in `postman_collections` directory.
+
+Open postman and import both the collection and environment collections
+
+- Select the `inji-env` environment from the dropdown
+- Update `REGISTRY_HOST` env with _FR_DOMAIN_ value
+- Update `ESIGNET_HOST` env with _ESIGNET_DOMAIN_ value
+- Update `INJI_HOST` env with _DOMAIN_ value
+- Update `client_secret` env with the keycloak secret value, by running the below cmd,
+```bash
+  echo Secret: $(kubectl get secrets keycloak-client-secrets -n esignet -o jsonpath="{.data.mosip_pms_client_secret}" | base64 --decode)
+```
+
+**1. Function Registry Setup**
+
+You can follow the below steps to initialize RC, you can trigger the apis in the given order in `RC` directory of the postman collection.
+- Now generate a DID(POST /did/generate) and create a credential schema(POST /credential-schema)
+  - take note of $.schema[0].author and $.schema[0].id from the create credential schema request
+  - host the output of the JSON to the GitHub pages repo created earlier
+- Next, to modify the properties of the Esignet and Certify services located in the deployments/esignet-local.properties and deployments/certify-local.properties files respectively.
+  trigger the deploy script to update the properties of esignet/certify services
+```bash
+curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/update_did.sh
+bash update_did.sh
+```
+
+**2. eSignet Setup**
+
+- You can now create a OIDC Client, goto `eSignet/OIDC Client Mgmt` section in postman collection and trigger all the APIs to create a OIDC client
+- Copy `privateKey_jwk` env value from postman environment 
+- Run the below command to mount the private key as p12 file to mimoto service
+```bash
+curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/upload_p12.sh
+bash upload_p12.sh
+```
+- Next you can run the apis in `eSignet/KBA` and verify if you are able to access the credential
+
+**3. Inji Web Demo**
+
+Next you can test the inji web by following the below steps:
+- Launch the Inji Web application in your web browser (Use _DOMAIN_)
+- In the Home page, from the section, List of Issuers section, click on issuers' tile to land in Credential Types selection page.
+- Click on a Credential Type tile and authenticate in the eSignet page by providing the required details.
+- Provide the patient details that was created in the postman collection, For ex: Patient ID: p-123, Patient Name: ram, Patient DoB: 14-09-2024
+- Credential is downloaded in the background and PDF will be generated and stored in the Downloads folder of the system.
+- Upon successful PDF generation, user can view the PDF of the downloaded VC
+
+**4. Mobile Wallet Demo**
+
+Next you can test the inji wallet by following the below steps:
+- Launch the Inji Wallet application in your simulator/phone
+- After the app setup you can follow the same steps provided above to download the VC for the user.
+
+**5. Inji Verify Demo**
+
+Next you can test the inji verify by following the below steps:
+- Launch the Inji Verify application in your mobile browser (Use _VERIFY_DOMAIN_)
+- In the Home page, select `Scan the QR Code` tab and scan the qr code present in the PDF file that was downloaded in the previous step.
+- If QR code is valid, the details of the VC and status will be shown
