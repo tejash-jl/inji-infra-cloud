@@ -142,5 +142,5 @@ az login
 
 Run the below script to deploy INJI services
 ```bash
-curl -sL https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/inji_setup.sh | bash -s -- 
+curl -sL https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/inji_deploy.sh | bash -s -- 
 ```
