@@ -6,6 +6,8 @@ upload_p12(){
   node -v
   npm -v
   openssl version
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   npm install -g cli-jwk-to-pem
   jwk=$1
   jwk-to-pem --jwk $jwk > key.pem
