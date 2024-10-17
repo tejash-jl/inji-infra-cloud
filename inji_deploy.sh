@@ -98,7 +98,7 @@ install_rc() {
   db_host=inji-psql-dev.postgres.database.azure.com
   admin_secret=$(uuidgen)
   local fr_host="$1"
-  local web_did="$2"
+  local WEB_DID="$2"
 
   echo -n "$db_pass" | base64 -w 0 | xargs -I '{}' sed -i -E 's@DB_PASSWORD.*@DB_PASSWORD: {}@' values.yaml
   echo -n "$keycloak_admin_password" | base64 -w 0 | xargs -I '{}' sed -i -E 's@KEYCLOAK_ADMIN_PASSWORD:.*@KEYCLOAK_ADMIN_PASSWORD: {}@' values.yaml
@@ -167,7 +167,7 @@ install_esignet() {
 
   local esignet_host="$1"
   local fr_host="$2"
-
+  domain=$esignet_host
 
   helm install softhsm mosip/softhsm -n esignet --create-namespace --set image.repository="$softhsm_docker_image" --set image.tag="$softhsm_docker_version" -f deployments/configs/softhsm.yaml --version "$softhsm_helm_version" --wait
 
