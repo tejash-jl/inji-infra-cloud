@@ -140,6 +140,7 @@ install_rc() {
 
   kubectl wait pod --all --for=jsonpath='{.status.phase}'=Running  -n registry
 
+  check_pod_status registry registry-keycloak
 
   echo -n "https://$fr_host" | xargs -I '{}' sed -i -E 's@DOMAIN_VALUE@{}@' ~/azure-devops/deployments/configs/keycloak-init-job.yaml
 
@@ -199,11 +200,29 @@ install_esignet() {
   kubectl create configmap keycloak-host --from-literal=keycloak-internal-service-url=http://keycloak.esignet.svc.cluster.local:80/auth/ -n esignet
 
   kubectl wait pod --all --for=jsonpath='{.status.phase}'=Running  -n esignet
-
+  check_pod_status esignet keycloak-0
   helm -n esignet install keycloak-init mosip/keycloak-init --set frontend=https://$esignet_host/auth --version $keycloak_init_helm_version --set image.repository=$keycloak_init_docker_image --set image.tag=$keycloak_init_docker_version
 
 
   echo "esignet config map created"
+}
+
+check_pod_status() {
+
+  echo "Waiting for pod $POD_NAME to be 1/1 Running..."
+  while true; do
+      current_status=$(kubectl get pods -n "$1" | grep "$2" | awk '{print $3, $2}')
+      echo "Current status: $current_status"
+
+      # Check if the pod is running with 1/1
+      if [[ "$current_status" == "Running 1/1" ]]; then
+          echo "Pod $POD_NAME is now 1/1 Running."
+          break
+      fi
+
+      # Wait for a few seconds before checking again
+      sleep 5
+  done
 }
 
 set_env() {
