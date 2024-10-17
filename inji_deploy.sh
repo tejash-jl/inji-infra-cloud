@@ -290,7 +290,7 @@ install_inji_mimoto(){
 
   envsubst < $MIMOTO_PROPERTIES  > $UPDATED_MIMOTO_PROPERTIES
   envsubst < $MIMOTO_ISSUERS_CONFIG  > $UPDATED_MIMOTO_ISSUERS_CONFIG
-  cp MIMOTO_CERTIFICATE_TEMPLATE UPDATED_MIMOTO_CERTIFICATE_TEMPLATE
+  cp $MIMOTO_CERTIFICATE_TEMPLATE $UPDATED_MIMOTO_CERTIFICATE_TEMPLATE
 
 
   kubectl create configmap mimoto-local-properties -n esignet --from-file=$UPDATED_MIMOTO_PROPERTIES --from-file=$UPDATED_MIMOTO_ISSUERS_CONFIG --from-file=$UPDATED_MIMOTO_CERTIFICATE_TEMPLATE -o yaml --dry-run=client | kubectl apply -f - -n esignet
