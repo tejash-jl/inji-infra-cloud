@@ -44,6 +44,7 @@ module "psql" {
   subnet_id = module.network.data_subnet_id
   vpc_id = module.network.vpc_id
   env = var.env
+  depends_on = [module.bastion]
 }
 
 //resource "azurerm_virtual_network" "vpc" {

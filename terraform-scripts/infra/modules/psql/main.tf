@@ -57,7 +57,7 @@ resource "azurerm_key_vault_secret" "kvs" {
 
 resource "random_password" "password" {
   length           = 16
-  special          = true
+  special          = false
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
