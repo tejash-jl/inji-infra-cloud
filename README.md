@@ -146,6 +146,17 @@ curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main
 bash inji_deploy.sh 
 ```
 
+#### Connect to PSQL
+Get PSQL admin password
+```bash
+echo $(az keyvault secret show --vault-name psql-kv-dev --name psql-password | jq -r '.value')
+```
+Connect to psql
+```bash
+sudo apt-get install postgresql-client
+psql --host inji-psql-dev.postgres.database.azure.com -d postgres -U psqladmin
+```
+
 
 ### DEMO
 The postman collection (along with env config) has been provided in `postman_collections` directory.
