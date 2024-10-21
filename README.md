@@ -1,6 +1,6 @@
 # INJI, one-click deployment on Azure
 
-![infra](assets/inji_architecture.png)
+![infra](assets/inji_architecture_.png)
 
 ## Introduction
 
