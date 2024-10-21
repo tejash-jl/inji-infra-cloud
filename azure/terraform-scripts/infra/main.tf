@@ -4,20 +4,20 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "identities" {
-  source         = "./modules/identity"
+  source         = "modules\/identity"
   resource_group = azurerm_resource_group.rg
   env = var.env
 }
 
 module "network" {
-  source                    = "./modules/network"
+  source                    = "modules\/network"
   resource_group            = azurerm_resource_group.rg
   aks_identity_principal_id = module.identities.aks_identity_principal_id
   env = var.env
 }
 
 module "aks" {
-  source                 = "./modules/aks"
+  source                 = "modules\/aks"
   resource_group         = azurerm_resource_group.rg
   subnet_id              = module.network.aks_dataplane_subnet_id
   api_server_subnet_id   = module.network.api_server_subnet_id
@@ -28,7 +28,7 @@ module "aks" {
 }
 
 module "bastion" {
-  source             = "./modules/bastion"
+  source             = "modules\/bastion"
   resource_group     = azurerm_resource_group.rg
   subnet_id          = module.network.bastion_subnet_id
   subnet_jumphost_id = module.network.jumphost_subnet_id
@@ -39,7 +39,7 @@ module "bastion" {
 }
 
 module "psql" {
-  source = "./modules/psql"
+  source = "modules\/psql"
   resource_group     = azurerm_resource_group.rg
   subnet_id = module.network.data_subnet_id
   vpc_id = module.network.vpc_id
