@@ -218,3 +218,17 @@ Next you can test the inji verify by following the below steps:
 - Launch the Inji Verify application in your mobile browser (Use _VERIFY_DOMAIN_)
 - In the Home page, select `Scan the QR Code` tab and scan the qr code present in the PDF file that was downloaded in the previous step.
 - If QR code is valid, the details of the VC and status will be shown
+
+
+### Destruction
+
+```bash
+terraform destroy
+```
+
+or
+
+```bash
+az group delete -y -n inji-rg-dev
+az group delete -y -n inji_node_rg_dev
+```
