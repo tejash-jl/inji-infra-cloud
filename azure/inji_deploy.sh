@@ -40,7 +40,7 @@ install_ingress() {
 
 clone_repo() {
   git clone https://github.com/tejash-jl/azure-devops.git
-  cd azure-devops
+  cd azure-devops/azure
 }
 
 install_vault() {
@@ -142,9 +142,9 @@ install_rc() {
 
   check_pod_status registry registry-keycloak
 
-  echo -n "https://$fr_host" | xargs -I '{}' sed -i -E 's@DOMAIN_VALUE@{}@' ~/azure-devops/deployments/configs/keycloak-init-job.yaml
+  echo -n "https://$fr_host" | xargs -I '{}' sed -i -E 's@DOMAIN_VALUE@{}@' ~/azure-devops/azure/deployments/configs/keycloak-init-job.yaml
 
-  kubectl apply -f ~/azure-devops/deployments/configs/keycloak-init-job.yaml -n registry
+  kubectl apply -f ~/azure-devops/azure/deployments/configs/keycloak-init-job.yaml -n registry
   kubectl wait pod --all --for=jsonpath='{.status.phase}'=Running  -n registry
   kubectl get cm -n registry registry-config -o yaml | sed -e 's|WEB_DID_BASE_URL: https://example.com/identifier|WEB_DID_BASE_URL: '"$WEB_DID"'|' | kubectl apply -f - -n registry
   kubectl rollout restart deploy registry-keycloak-service -n registry
@@ -337,7 +337,7 @@ install_issuer $email registry
 install_issuer $email esignet
 
 install_rc $rc_domain $did_url
-cd ~/azure-devops/
+cd ~/azure-devops/azure/
 pwd
 set_env $inji_domain $esignet_domain $rc_domain
 install_esignet $esignet_domain rc_domain

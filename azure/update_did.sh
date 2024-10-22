@@ -1,7 +1,7 @@
 #!/bin/bash
 
 update_did(){
-  cd ~/azure-devops/
+  cd ~/azure-devops/azure/
 
 
   echo -n "$1" | xargs -I '{}' sed -i -E 's@mosip.esignet.vciplugin.sunbird-rc.credential-type.VaccinationCredential.static-value-map.issuerId=.*@mosip.esignet.vciplugin.sunbird-rc.credential-type.VaccinationCredential.static-value-map.issuerId={}@' esignet-local.properties

@@ -19,7 +19,7 @@ upload_p12(){
 
   openssl req -x509 -sha256 -days 365 -key key.pem -in csr.csr -out certificate.pem
 
-  export pass=$(cat ~/azure-devops/mimoto-default.properties | grep "mosip.oidc.p12.password" | sed  -e 's/mosip.oidc.p12.password=//g')
+  export pass=$(cat ~/azure-devops/azure/mimoto-default.properties | grep "mosip.oidc.p12.password" | sed  -e 's/mosip.oidc.p12.password=//g')
   openssl pkcs12 -export -out oidckeystore.p12 -inkey key.pem -in certificate.pem --name esignet-sunbird-partner -passout env:pass
 
   kubectl create secret generic mimotooidc -n esignet --from-file=oidckeystore.p12
