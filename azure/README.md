@@ -142,7 +142,7 @@ az login
 
 Run the below script to deploy INJI services
 ```bash
-curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/inji_deploy.sh 
+curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/azure/inji_deploy.sh 
 bash inji_deploy.sh 
 ```
 
@@ -181,7 +181,7 @@ You can follow the below steps to initialize RC, you can trigger the apis in the
 - Next, to modify the properties of the Esignet and Certify services located in the deployments/esignet-local.properties and deployments/certify-local.properties files respectively.
   trigger the deploy script to update the properties of esignet/certify services
 ```bash
-curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/update_did.sh
+curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/azure/update_did.sh
 bash update_did.sh
 ```
 
@@ -191,7 +191,7 @@ bash update_did.sh
 - Copy `privateKey_jwk` env value from postman environment 
 - Run the below command to mount the private key as p12 file to mimoto service
 ```bash
-curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/upload_p12.sh
+curl -O https://raw.githubusercontent.com/tejash-jl/azure-devops/refs/heads/main/azure/upload_p12.sh
 bash upload_p12.sh
 ```
 - Next you can run the apis in `eSignet/KBA` and verify if you are able to access the credential
