@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mimoto.fullname" . }}
+  labels:
+    {{- include "mimoto.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "mimoto.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "mimoto.labels" . | nindent 8 }}
+	{{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "mimoto.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: install
+          image: busybox:1.28
+          command: ["/bin/sh", "-c","wget -O '/workss-dir/mimoto-issuers-config.json' {{ .Values.config.mimotoConfigUrl  }}  && wget -O '/workss-dir/CredentialTemplate.html' {{ .Values.config.credentialTemplateUrl  }} && wget -O '/certs-dir/client-identity.p12' {{ .Values.config.keyFileUrl}}"]
+          volumeMounts:
+          - name: workssdir
+            mountPath: "/workss-dir"
+          - name: certsdir
+            mountPath: "/certs-dir"
+      containers:
+        - name: {{ .Chart.Name }}
+          env:
+            - name: active_profile_env
+              value: local
+            - name: issuers_config_path
+              value: file:config/mimoto-issuers-config.json
+            - name: templates_path
+              value: file:config/CredentialTemplate.html
+            - name: well_known_path
+              value: file:config/mimoto-issuers-config.json
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+                #          livenessProbe:
+                #httpGet:
+                #path: /residentmobileapp
+              
+                #port: {{ .Values.service.port }}
+                # readinessProbe:
+                # httpGet:
+                # path: /residentmobileapp
+                #port: {{ .Values.service.port }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - mountPath: "/home/mosip/config"
+            name: workssdir
+          - mountPath: "/home/mosip/certs"
+            name: certsdir
+      volumes:
+        - name: workssdir
+          emptyDir: {}
+        - name: certsdir
+          emptyDir: {}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

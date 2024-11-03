@@ -1,0 +1,117 @@
+global:
+  host: "registry.demodpgs.net"
+  alb:
+    name: "sbrc-demo-alb"
+    certificateArn: "arn:aws:acm:ap-south-1:370803901956:certificate/6064b56f-1367-4dc4-9a42-290bd724479a"
+    registryHost: "registry.sandbox.demodpgs.net"
+    credentialHost: "registry-credentials.sandbox.demodpgs.net"
+    schemaHost: "registry-schema.sandbox.demodpgs.net"
+    identityHost: "registry-identity.sandbox.demodpgs.net"
+  database:
+    host: "rdsstackesignetdemo-databaseb269d8bb-bbjydxmca1mi.cluster-cveklit2rj4m.ap-south-1.rds.amazonaws.com"
+    user: "postgres"
+    port: "5432"
+    vendor: "postgres"
+  keycloak:
+    database: "registry"
+    admin:
+      username: "admin"
+    proxy_forwarding: true
+  registry:
+    database: "registry"
+    search_provider: "dev.sunbirdrc.registry.service.NativeSearchService"
+    signature_provider: "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl"
+    sso:
+      realm: "sunbird-rc"
+      admin_client_id: "admin-api"
+      client_id: "registry-frontend"
+    signature_enabled: false
+    keycloak_user_set_password: false
+    base_apis_enabled: false
+    log_level: DEBUG
+    logging.level.root: INFO
+    enable_external_templates: true
+    async_enabled: false
+    enable_async: false
+    enable_authentication: false
+    enable_webhook: false
+    webhook_url: http://localhost:5001/api/v1/callback
+    manager_type: DefinitionsManager
+    swagger_enabled: true
+    swagger_title: SUNBIRD-RC
+    authentication_enabled: false
+    notification_enabled: false
+    webhook_enabled: false
+    claims_enabled: false
+    certificate_enabled: false
+    encryption_enabled: false
+    event_enabled: false
+    idgen_enabled: false
+    opa_enabled: false
+    filestorage_enabled: false
+    registry_base_apis_enable: false
+    opa_allow_key_name: authorized
+    encryption_port : 8013
+    context_path : /
+    idformatFromMdms: false
+    mdmsProvider: org.egov.id.masterdata.provider.DBMasterDataProvider
+    autoCreateNewSeq: true
+    migrationEnabled: true
+    did_enabled: true
+    credential_did_method: rcw
+    issuer_did_method : issuer
+    schema_author: Registry
+    schema_author_did_method: author
+    envVars:
+      egov_mdms_provider: org.egov.id.masterdata.provider.DBMasterDataProvider
+  minio:
+    url:
+    access_key: admin
+    bucket_key: sunbird-rc
+  elastic_search:
+    url:
+    auth_enabled: false
+    username: ""
+  kafka:
+    url:
+  redis:
+    host:
+    port: 6379
+  vault:
+    address: http://vault:8200
+    base_url: http://vault:8200/v1
+    root_path: http://vault:8200/v1/kv
+    vault_timeout: 5000
+    vault_proxy: false
+    vault_token: 
+  sunbird:
+    enable_auth: false
+    signing_algo: Ed25519
+    jwks_uri: ""
+  secrets:
+    DB_PASSWORD: TkxoTCpJLWU1NGU=
+    ELASTIC_SEARCH_PASSWORD: ""
+    KEYCLOAK_ADMIN_CLIENT_SECRET: YjJiMGNhYjEtMjQzZC00ZTZlLTkzZTctOTAxNWZmNjZkZjJi
+    KEYCLOAK_ADMIN_PASSWORD: YWRtaW4xMjM=
+    KEYCLOAK_DEFAULT_USER_PASSWORD: YWRtaW5AMTIz
+    MINIO_SECRET_KEY: Kgo=
+    VAULT_SECRET_TOKEN: ""
+    DB_URL: cG9zdGdyZXM6Ly9wb3N0Z3JlczpOTGhMKkktZTU0ZUByZHNzdGFja2VzaWduZXRkZW1vLWRhdGFiYXNlYjI2OWQ4YmItYmJqeWR4bWNhMW1pLmNsdXN0ZXItY3Zla2xpdDJyajRtLmFwLXNvdXRoLTEucmRzLmFtYXpvbmF3cy5jb206NTQzMi9zdW5iaXJkX3Jj
+identity-service:
+  web_did_base_url: "https://my-first-bucket-00989123.s3.ap-south-1.amazonaws.com/"
+registry:
+  ingress:
+    enabled: false
+    className: "alb"
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80},{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/group.name: sbrc-lb
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=3600
+      ingress.kubernetes.io/rewrite-target: /   # Added rewrite annotation here for / to /selfservice
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:370803901956:certificate/81a0255b-355f-4df6-aa45-cb4ea7f1ec8b
+    hosts:
+      - paths:
+          - path: /
+            pathType: Prefix

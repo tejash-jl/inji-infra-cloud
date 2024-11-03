@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: inji-web-ingress        
+  labels:
+    {{- include "inji-web.labels" . | nindent 4 }}
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/group.name: {{ .Values.alb.name }}
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=3600
+    ingress.kubernetes.io/rewrite-target: /   # Added rewrite annotation here for / to /selfservice
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.alb.certificateArn }}
+spec:
+  ingressClassName: alb
+  rules:
+    - host: {{ .Values.alb.host }}
+      http:
+        paths:
+          - path: {{ .Values.alb.path }}
+            pathType: Prefix
+            backend:
+              service:
+                name: injiweb-inji-web
+                port:
+                  number: 80
+
+
