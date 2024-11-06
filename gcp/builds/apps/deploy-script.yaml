@@ -5,7 +5,7 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'git'
   id: 'clone-rc-repo'
-  args: ['clone', 'https://github.com/tejash-jl/gcp-devops.git']
+  args: ['clone', 'https://github.com/sunbird-rc/gcp-devops.git']
   dir: 'sunbird-rc'
 - name: 'gcr.io/${_PROJECT_ID_}/helm:3.12.0'
   id: 'deploy-rc'
@@ -36,7 +36,7 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'git'
   id: 'clone-esignet-repo'
-  args: ['clone', 'https://github.com/tejash-jl/eSignet-Stack.git']
+  args: ['clone', '-b', 'aparna' 'https://github.com/tejash-jl/esignet-infra-cloud.git']
   dir: 'esignet'
   waitFor: 'configure-rc'
 - name: 'gcr.io/${_PROJECT_ID_}/helm:3.12.0'
