@@ -1,7 +1,7 @@
 #!/bin/sh
 apt-get update
 apt-get install jq gettext -y
-LOCAL_ESIGNET_PROPERTIES=deployments/esignet-local.properties
+LOCAL_ESIGNET_PROPERTIES=gcp/deployments/esignet-local.properties
 UPDATED_ESIGNET_PROPERTIES=esignet-local.properties
 export AUTHENTICATOR_SERVICE=MockAuthenticationService
 export ESIGNET_HOST=$1
