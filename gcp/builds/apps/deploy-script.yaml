@@ -18,7 +18,7 @@ steps:
       rm deployments/schemas/*
       cp -rf ../../deployments/.registry.env .env
       cp ../../deployments/schemas/registry/* deployments/schemas/
-      gcloud builds submit --region=${_REGION_} --config="./builds/apps/deploy-script.yaml" --project=${_PROJECT_ID_} --substitutions=_PROJECT_ID_=${_PROJECT_ID_},_REGION_=${_REGION_},_CLUSTER_NAME_=${_CLUSTER_NAME_},_LOG_BUCKET_=${_LOG_BUCKET_},_DOMAIN_=${_FR_DOMAIN_},_EMAIL_ID_=${_EMAIL_ID_},_SERVICE_ACCOUNT_=${_SERVICE_ACCOUNT_},_SECRET_NAME_=${_SECRET_NAME_},_DB_NAME_=${_DB_NAME_},_LB_NAME_=${_LB_NAME_},_NAME_=${_NAME_}
+      gcloud builds submit --region=${_REGION_} --config="./builds/apps/deploy-script.yaml" --project=${_PROJECT_ID_} --substitutions=_PROJECT_ID_=${_PROJECT_ID_},_REGION_=${_REGION_},_CLUSTER_NAME_=${_CLUSTER_NAME_},_LOG_BUCKET_=${_LOG_BUCKET_},_DOMAIN_=${_FR_DOMAIN_},_EMAIL_ID_=${_EMAIL_ID_},_SERVICE_ACCOUNT_=${_SERVICE_ACCOUNT_},_SECRET_NAME_=${_SECRET_NAME_},_DB_NAME_=${_DB_NAME_},_LB_NAME_=${_RC_LB_NAME_},_NAME_=${_NAME_}
 
 - name: 'gcr.io/${_PROJECT_ID_}/helm:3.12.0'
   id: 'configure-rc'
@@ -47,8 +47,8 @@ steps:
   args:
     - -c
     - |
-      cp -rf ../../deployments/esignet-local.properties gcp/deployments/configs/esignet.properties
-      cp -rf ../../deployments/.esignet.env gcp/.env
+      cp -rf ../../../deployments/esignet-local.properties deployments/configs/esignet.properties
+      cp -rf ../../../deployments/.esignet.env .env
       gcloud builds submit --region=${_REGION_} --config="./builds/apps/deploy-script.yaml" --project=${_PROJECT_ID_} --substitutions=_PROJECT_ID_=${_PROJECT_ID_},_REGION_=${_REGION_},_CLUSTER_NAME_=${_CLUSTER_NAME_},_LOG_BUCKET_=${_LOG_BUCKET_},_DOMAIN_=${_ESIGNET_DOMAIN_},_EMAIL_ID_=${_EMAIL_ID_},_SERVICE_ACCOUNT_=${_SERVICE_ACCOUNT_},_SECRET_NAME_=${_SECRET_NAME_},_DB_NAME_=${_DB_NAME_},_LB_NAME_=${_LB_NAME_},_NAME_=${_NAME_},_ENABLE_MOCK_=false,_REDIS_NAME_=${_REDIS_NAME_}
       echo ${_FR_DOMAIN_}
       echo ${_WEB_DID_BASE_URL_}
@@ -195,6 +195,7 @@ substitutions:
   _DB_NAME_: 'inji-demo-pgsql'
   _REDIS_NAME_: 'inji-demo-redis'
   _LB_NAME_: 'inji-demo-glb-lb-ip'
+  _RC_LB_NAME_: 'rc-glb-lb-ip'
   _NAME_: 'inji-demo'
   _WEB_DID_BASE_URL_: 'https://tejash-jl.github.io/DID-Resolve'
   _DOMAIN_: ''

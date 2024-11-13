@@ -109,7 +109,8 @@ resource "google_compute_network_firewall_policy_rule" "fw_rules" {
 }
 
 resource "google_compute_address" "reserved_lb_public_ip" {
-  name = var.lbipInfo.name
+   for_each = { for lb in var.lbipInfo : lb.name => lb }
+   name = each.key  
 }
 
 resource "google_compute_global_address" "private_ip_block" {
@@ -461,7 +462,8 @@ module "vpn_ha_2" {
 }
 
 output "lb_public_ip" {
-  value = google_compute_address.reserved_lb_public_ip.address
+  value = { for name, addr in google_compute_address.reserved_lb_public_ip : name => addr.address }
+  #value = google_compute_address.reserved_lb_public_ip.address.0.ip_address
 }
 
 output "sql_private_ip" {

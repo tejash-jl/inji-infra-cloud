@@ -87,9 +87,14 @@ firewallRuleInfo = [
   }
 ]
 
-lbipInfo = {
-  name = "inji-demo-glb-lb-ip"
-}
+lbipInfo = [
+  {
+    name = "inji-demo-glb-lb-ip"
+  },
+  {
+    name = "rc-glb-lb-ip"
+  }
+]
 
 sql_ip_name = "inji-demo-sql-lb-ip"
 

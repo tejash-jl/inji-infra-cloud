@@ -200,13 +200,15 @@ variable "firewallRuleInfo" {
 }
 
 variable "lbipInfo" {
-  type = object({
+  type = list(object({
     name = string
-  })
+  }))
 
-  default = {
-    name = ""
-  }
+  default = [
+    {
+      name = ""
+    }
+  ]
 }
 
 variable "natipInfo" {
