@@ -85,6 +85,7 @@ steps:
       yq  e -i 'select(di == 3).spec.template.spec.volumes += [{"name":"certify-properties","configMap":{"name":"certify-local-properties"}}]' deploy.yaml
       yq e -i 'select(di == 3).spec.template.spec.containers[0] += {"volumeMounts":[{"mountPath":"/home/mosip/certify-local.properties","name":"certify-properties","subPath":"certify-local.properties"}]}' deploy.yaml
       kubectl apply -f deploy.yaml -n esignet
+      cat deployments/configs/gateway.yaml | sed 's/DOMAIN/${_DOMAIN_}/' | kubectl apply -n esignet -f -
       cat deployments/configs/inji-virtualservice.yaml | sed 's/DOMAIN/${_DOMAIN_}/'  | kubectl apply -n esignet -f -
       cat deployments/configs/inji-residentmobileapp-virtualservice.yaml | sed 's/DOMAIN/${_DOMAIN_}/'  | kubectl apply -n esignet -f -
       set +a
@@ -172,6 +173,7 @@ steps:
       echo ${_VERIFY_DOMAIN_}
       export $(grep -v '^#' .env | xargs -d '\n')
       helm repo add mosip https://mosip.github.io/mosip-helm
+      cat deployments/configs/verify-gateway.yaml | sed 's/DOMAIN/${_VERIFY_DOMAIN_}/' | kubectl apply -n esignet -f -
       cat deployments/configs/inji-verify-virtualservice.yaml | sed 's/DOMAIN/${_VERIFY_DOMAIN_}/'  | kubectl apply -n esignet -f -
       helm -n esignet install injiverify mosip/injiverify -f deployments/configs/inji-verify-values.yaml --version $injiverify_helm_version --set image.repository=$injiverify_docker_image --set image.tag=$injiverify_docker_version --set esignet_redirect_url=https://${_DOMAIN_}
 

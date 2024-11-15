@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: inji-gateway
+  name: inji-verify-gateway
 spec:
   selector:
     istio: ingressgateway
