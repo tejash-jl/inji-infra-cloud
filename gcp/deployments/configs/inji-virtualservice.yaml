@@ -34,7 +34,7 @@ spec:
               number: 80
     - match:
         - uri:
-            exact: /
+            prefix: /
       route:
         - destination:
             host: injiweb
