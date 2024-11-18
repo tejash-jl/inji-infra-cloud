@@ -397,7 +397,7 @@ _REGION_="$REGION",_LOG_BUCKET_=$PROJECT_ID-inji-state,_EMAIL_ID_=$EMAIL_ID,_DOM
 - Copy `privateKey_jwk` env value from postman environment and update `deployments\secrets\key.jwk` file
 - Run the below command to mount the private key as p12 file to mimoto service
 ```bash
-gcloud builds submit --config="./builds/config-update/deploy-script.yaml" \
+gcloud builds submit --config="./builds/p12-import/deploy-script.yaml" \
 --region=$REGION --project=$PROJECT_ID --substitutions=_PROJECT_ID_=$PROJECT_ID,\
 _REGION_="$REGION",_LOG_BUCKET_=$PROJECT_ID-inji-state,_EMAIL_ID_=$EMAIL_ID,_SERVICE_ACCOUNT_=$GSA
 ```
