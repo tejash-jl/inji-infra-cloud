@@ -6,7 +6,7 @@ spec:
   hosts:
     - DOMAIN
   gateways:
-    - inji-gateway
+    - inji-verify-gateway
   http:
     - match:
         - uri:
