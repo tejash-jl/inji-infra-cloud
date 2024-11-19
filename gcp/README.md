@@ -399,7 +399,7 @@ _REGION_="$REGION",_LOG_BUCKET_=$PROJECT_ID-inji-state,_EMAIL_ID_=$EMAIL_ID,_DOM
 ```bash
 gcloud builds submit --config="./builds/p12-import/deploy-script.yaml" \
 --region=$REGION --project=$PROJECT_ID --substitutions=_PROJECT_ID_=$PROJECT_ID,\
-_REGION_="$REGION",_LOG_BUCKET_=$PROJECT_ID-inji-state,_EMAIL_ID_=$EMAIL_ID,_SERVICE_ACCOUNT_=$GSA
+_REGION_="$REGION",_LOG_BUCKET_=$PROJECT_ID-inji-state,_SERVICE_ACCOUNT_=$GSA
 ```
 - Next you can run the apis in `eSignet/KBA` and verify if you are able to access the credential
 

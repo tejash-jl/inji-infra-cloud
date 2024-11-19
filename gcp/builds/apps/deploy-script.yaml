@@ -5,7 +5,7 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'git'
   id: 'clone-rc-repo'
-  args: ['clone', 'https://github.com/sunbird-rc/gcp-devops.git']
+  args: ['clone', 'https://github.com/tejash-jl/gcp-devops.git']
   dir: 'sunbird-rc'
 - name: 'gcr.io/${_PROJECT_ID_}/helm:3.12.0'
   id: 'deploy-rc'
