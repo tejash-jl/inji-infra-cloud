@@ -36,7 +36,7 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'git'
   id: 'clone-esignet-repo'
-  args: ['clone', '-b', 'aparna', 'https://github.com/tejash-jl/esignet-infra-cloud.git']
+  args: ['clone', 'https://github.com/tejash-jl/esignet-infra-cloud.git']
   dir: 'esignet'
   waitFor: 'configure-rc'
 - name: 'gcr.io/${_PROJECT_ID_}/helm:3.12.0'
