@@ -34,17 +34,17 @@ spec:
               number: 80
     - match:
         - uri:
-            prefix: /
-      route:
-        - destination:
-            host: injiweb
-            port:
-              number: 80
-    - match:
-        - uri:
             exact: /credential-template.html
       route:
         - destination:
             host: file-store
+            port:
+              number: 80
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: injiweb
             port:
               number: 80
