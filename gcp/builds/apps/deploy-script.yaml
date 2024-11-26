@@ -18,7 +18,7 @@ steps:
       rm deployments/schemas/*
       cp -rf ../../deployments/.registry.env .env
       cp ../../deployments/schemas/registry/* deployments/schemas/
-      gcloud builds submit --region=${_REGION_} --config="./builds/apps/deploy-script.yaml" --project=${_PROJECT_ID_} --substitutions=_PROJECT_ID_=${_PROJECT_ID_},_REGION_=${_REGION_},_CLUSTER_NAME_=${_CLUSTER_NAME_},_LOG_BUCKET_=${_LOG_BUCKET_},_DOMAIN_=${_FR_DOMAIN_},_EMAIL_ID_=${_EMAIL_ID_},_SERVICE_ACCOUNT_=${_SERVICE_ACCOUNT_},_SECRET_NAME_=${_SECRET_NAME_},_DB_NAME_=${_DB_NAME_},_LB_NAME_=${_LB_NAME_},_NAME_=${_NAME_}
+      gcloud builds submit --region=${_REGION_} --config="./builds/apps/deploy-script.yaml" --project=${_PROJECT_ID_} --substitutions=_PROJECT_ID_=${_PROJECT_ID_},_REGION_=${_REGION_},_CLUSTER_NAME_=${_CLUSTER_NAME_},_LOG_BUCKET_=${_LOG_BUCKET_},_DOMAIN_=${_FR_DOMAIN_},_EMAIL_ID_=${_EMAIL_ID_},_SERVICE_ACCOUNT_=${_SERVICE_ACCOUNT_},_SECRET_NAME_=${_SECRET_NAME_},_DB_NAME_=${_DB_NAME_},_LB_NAME_=${_RC_LB_NAME_},_NAME_=${_NAME_}
 
 - name: 'gcr.io/${_PROJECT_ID_}/helm:3.12.0'
   id: 'configure-rc'
@@ -36,20 +36,20 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'git'
   id: 'clone-esignet-repo'
-  args: ['clone', 'https://github.com/tejash-jl/eSignet-Stack.git']
+  args: ['clone', 'https://github.com/tejash-jl/esignet-infra-cloud.git']
   dir: 'esignet'
   waitFor: 'configure-rc'
 - name: 'gcr.io/${_PROJECT_ID_}/helm:3.12.0'
   id: 'deploy-esignet'
   entrypoint: 'bash'
-  dir: 'esignet/eSignet-Stack'
+  dir: 'esignet/esignet-infra-cloud/gcp'
   waitFor: 'clone-esignet-repo'
   args:
     - -c
     - |
-      cp -rf ../../deployments/esignet-local.properties deployments/configs/esignet.properties
-      cp -rf ../../deployments/.esignet.env .env
-      gcloud builds submit --region=${_REGION_} --config="./builds/apps/deploy-script.yaml" --project=${_PROJECT_ID_} --substitutions=_PROJECT_ID_=${_PROJECT_ID_},_REGION_=${_REGION_},_CLUSTER_NAME_=${_CLUSTER_NAME_},_LOG_BUCKET_=${_LOG_BUCKET_},_DOMAIN_=${_ESIGNET_DOMAIN_},_EMAIL_ID_=${_EMAIL_ID_},_SERVICE_ACCOUNT_=${_SERVICE_ACCOUNT_},_SECRET_NAME_=${_SECRET_NAME_},_DB_NAME_=${_DB_NAME_},_LB_NAME_=${_LB_NAME_},_NAME_=${_NAME_},_ENABLE_MOCK_=false,_REDIS_NAME_=${_REDIS_NAME_},_SKIP_INGRESS_="true"
+      cp -rf ../../../deployments/esignet-local.properties deployments/configs/esignet.properties
+      cp -rf ../../../deployments/.esignet.env .env
+      gcloud builds submit --region=${_REGION_} --config="./builds/apps/deploy-script.yaml" --project=${_PROJECT_ID_} --substitutions=_PROJECT_ID_=${_PROJECT_ID_},_REGION_=${_REGION_},_CLUSTER_NAME_=${_CLUSTER_NAME_},_LOG_BUCKET_=${_LOG_BUCKET_},_DOMAIN_=${_ESIGNET_DOMAIN_},_EMAIL_ID_=${_EMAIL_ID_},_SERVICE_ACCOUNT_=${_SERVICE_ACCOUNT_},_SECRET_NAME_=${_SECRET_NAME_},_DB_NAME_=${_DB_NAME_},_LB_NAME_=${_LB_NAME_},_NAME_=${_NAME_},_ENABLE_MOCK_=false,_REDIS_NAME_=${_REDIS_NAME_}
       echo ${_FR_DOMAIN_}
       echo ${_WEB_DID_BASE_URL_}
       sh deployments/scripts/config-init.sh ${_ESIGNET_DOMAIN_} ${_DB_NAME_} ${_SECRET_NAME_} ${_REDIS_NAME_} ${_REGION_} false ${_FR_DOMAIN_}
@@ -85,8 +85,10 @@ steps:
       yq  e -i 'select(di == 3).spec.template.spec.volumes += [{"name":"certify-properties","configMap":{"name":"certify-local-properties"}}]' deploy.yaml
       yq e -i 'select(di == 3).spec.template.spec.containers[0] += {"volumeMounts":[{"mountPath":"/home/mosip/certify-local.properties","name":"certify-properties","subPath":"certify-local.properties"}]}' deploy.yaml
       kubectl apply -f deploy.yaml -n esignet
-      cat deployments/configs/inji-ingress.yaml | sed 's/DOMAIN/${_DOMAIN_}/'  | kubectl apply -n esignet -f -
-      cat deployments/configs/inji-residentmobileapp-ingress.yaml | sed 's/DOMAIN/${_DOMAIN_}/'  | kubectl apply -n esignet -f -
+      cat deployments/configs/certificate.yaml | sed 's/DOMAIN/${_DOMAIN_}/' | kubectl apply -n istio-system -f -
+      cat deployments/configs/gateway.yaml | sed 's/DOMAIN/${_DOMAIN_}/' | kubectl apply -n esignet -f -
+      cat deployments/configs/inji-virtualservice.yaml | sed 's/DOMAIN/${_DOMAIN_}/'  | kubectl apply -n esignet -f -
+      cat deployments/configs/inji-residentmobileapp-virtualservice.yaml | sed 's/DOMAIN/${_DOMAIN_}/'  | kubectl apply -n esignet -f -
       set +a
   waitFor:
     - 'deploy-esignet'
@@ -172,7 +174,8 @@ steps:
       echo ${_VERIFY_DOMAIN_}
       export $(grep -v '^#' .env | xargs -d '\n')
       helm repo add mosip https://mosip.github.io/mosip-helm
-      cat deployments/configs/inji-verify-ingress.yaml | sed 's/DOMAIN/${_VERIFY_DOMAIN_}/'  | kubectl apply -n esignet -f -
+      cat deployments/configs/verify-gateway.yaml | sed 's/DOMAIN/${_VERIFY_DOMAIN_}/' | kubectl apply -n esignet -f -
+      cat deployments/configs/inji-verify-virtualservice.yaml | sed 's/DOMAIN/${_VERIFY_DOMAIN_}/'  | kubectl apply -n esignet -f -
       helm -n esignet install injiverify mosip/injiverify -f deployments/configs/inji-verify-values.yaml --version $injiverify_helm_version --set image.repository=$injiverify_docker_image --set image.tag=$injiverify_docker_version --set esignet_redirect_url=https://${_DOMAIN_}
 
       set +a
@@ -195,6 +198,7 @@ substitutions:
   _DB_NAME_: 'inji-demo-pgsql'
   _REDIS_NAME_: 'inji-demo-redis'
   _LB_NAME_: 'inji-demo-glb-lb-ip'
+  _RC_LB_NAME_: 'rc-glb-lb-ip'
   _NAME_: 'inji-demo'
   _WEB_DID_BASE_URL_: 'https://tejash-jl.github.io/DID-Resolve'
   _DOMAIN_: ''

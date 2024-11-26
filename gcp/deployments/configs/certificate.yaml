@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: inji-cert
+  namespace: istio-system  # namespace where Istio is installed
+spec:
+  secretName: inji-cert-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: DOMAIN
+  dnsNames:
+    - DOMAIN
