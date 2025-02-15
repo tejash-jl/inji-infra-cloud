@@ -1,3 +1,12 @@
+# Public IP for the Bastion VM
+resource "azurerm_public_ip" "bastion_vm_pip" {
+  name                = "bastion-vm-pip-${var.env}"
+  location            = var.resource_group.location
+  resource_group_name = var.resource_group.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
 # Linux VM
 resource "azurerm_network_interface" "ni" {
   name                = "nic-${var.env}"
@@ -8,33 +17,9 @@ resource "azurerm_network_interface" "ni" {
     name                          = "internal"
     subnet_id                     = var.subnet_jumphost_id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.bastion_vm_pip.id
   }
 }
-
-# Bastion
-resource "azurerm_public_ip" "bastion" {
-  name                = "bastion-pip-${var.env}"
-  location            = var.resource_group.location
-  resource_group_name = var.resource_group.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
-
-resource "azurerm_bastion_host" "bastion_host" {
-  name                = "bastion-${var.env}"
-  location            = var.resource_group.location
-  resource_group_name = var.resource_group.name
-  sku                 = "Standard"
-  ip_configuration {
-    name                 = "configuration"
-    subnet_id            = var.subnet_id
-    public_ip_address_id = azurerm_public_ip.bastion.id
-  }
-
-  tunneling_enabled  = true
-  copy_paste_enabled = true
-}
-
 
 resource "azurerm_linux_virtual_machine" "bastion_vm" {
   name                = "bastion-vm-${var.env}"

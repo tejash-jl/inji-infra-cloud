@@ -28,24 +28,24 @@ module "aks" {
 }
 
 module "bastion" {
-  source             = "./modules/bastion"
-  resource_group     = azurerm_resource_group.rg
-  subnet_id          = module.network.bastion_subnet_id
-  subnet_jumphost_id = module.network.jumphost_subnet_id
-  admin_password     = var.bastion_admin_password
-  ssh_public_key     = var.ssh_public_key
-  env = var.env
-  vnet_id = module.network.vpc_id
+ source             = "./modules/bastion"
+ resource_group     = azurerm_resource_group.rg
+ subnet_id          = module.network.bastion_subnet_id
+ subnet_jumphost_id = module.network.jumphost_subnet_id
+ admin_password     = var.bastion_admin_password
+ ssh_public_key     = var.ssh_public_key
+ env = var.env
+ vnet_id = module.network.vpc_id
 }
 
-module "psql" {
-  source = "./modules/psql"
-  resource_group     = azurerm_resource_group.rg
-  subnet_id = module.network.data_subnet_id
-  vpc_id = module.network.vpc_id
-  env = var.env
-  depends_on = [module.bastion]
-}
+//module "psql" {
+  //source = "./modules/psql"
+  //resource_group     = azurerm_resource_group.rg
+  //subnet_id = module.network.data_subnet_id
+  //vpc_id = module.network.vpc_id
+  //env = var.env
+  //depends_on = [module.bastion]
+//}
 
 //resource "azurerm_virtual_network" "vpc" {
 //  name                = "esignet-${var.env}-vpc"

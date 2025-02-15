@@ -5,3 +5,7 @@ output "resource_group_name" {
 output "lb_ip" {
   value = module.aks.lb_ip
 }
+
+output "bastion_vm_public_ip" {
+  value = module.bastion.bastion_vm_public_ip
+}

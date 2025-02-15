@@ -91,6 +91,17 @@ resource "azurerm_network_security_group" "sg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+  security_rule {
+    name                        = "AllowSSH"
+    priority                    = 102
+    direction                   = "Inbound"
+    access                      = "Allow"
+    protocol                    = "Tcp"
+    source_port_range           = "*"
+    destination_port_range      = "22"
+    source_address_prefix       = "*"
+    destination_address_prefix  = "*"
+  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "sga" {
@@ -99,14 +110,14 @@ resource "azurerm_subnet_network_security_group_association" "sga" {
 }
 
 # Network contributor role assignments
-resource "azurerm_role_assignment" "aks_control_plane" {
-  scope                = azurerm_subnet.api-server.id
-  role_definition_name = "Network Contributor"
-  principal_id         = var.aks_identity_principal_id
-}
-resource "azurerm_role_assignment" "aks_dataplane" {
-  scope                = azurerm_subnet.aks-data-plane.id
-  role_definition_name = "Network Contributor"
-  principal_id         = var.aks_identity_principal_id
-}
+//resource "azurerm_role_assignment" "aks_control_plane" {
+  //scope                = azurerm_subnet.api-server.id
+  //role_definition_name = "Network Contributor"
+  //principal_id         = var.aks_identity_principal_id
+//}
+//resource "azurerm_role_assignment" "aks_dataplane" {
+  //scope                = azurerm_subnet.aks-data-plane.id
+  //role_definition_name = "Network Contributor"
+  //principal_id         = var.aks_identity_principal_id
+//}
 
