@@ -1,0 +1,54 @@
+# PostgreSQL Configuration
+postgresql:
+  global:
+    postgresql:
+      auth:
+        username: postgres
+        password: postgres
+        database: mydb
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 250m
+      limits:
+        memory: 512Mi
+        cpu: 500m
+
+# Redis Configuration
+redis:
+  architecture: standalone
+  master:
+    persistence:
+      enabled: false
+    resources:
+      requests:
+        memory: 128Mi
+        cpu: 100m
+      limits:
+        memory: 256Mi
+        cpu: 250m
+
+# Kafka Configuration
+kafka:
+  zookeeper:
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 250m
+      limits:
+        memory: 512Mi
+        cpu: 500m
+  broker:
+    persistence:
+      enabled: false
+    replicaCount: 1
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 250m
+      limits:
+        memory: 512Mi
+        cpu: 500m

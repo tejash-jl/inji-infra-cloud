@@ -91,22 +91,34 @@ resource "azurerm_network_security_group" "sg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+}
+
+resource "azurerm_network_security_group" "bastion_nsg" {
+  name                = "bastion-nsg-${var.env}"
+  location            = var.resource_group.location
+  resource_group_name = var.resource_group.name
+
   security_rule {
-    name                        = "AllowSSH"
-    priority                    = 102
-    direction                   = "Inbound"
-    access                      = "Allow"
-    protocol                    = "Tcp"
-    source_port_range           = "*"
-    destination_port_range      = "22"
-    source_address_prefix       = "*"
-    destination_address_prefix  = "*"
+    name                       = "allow-ssh"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
   }
 }
 
 resource "azurerm_subnet_network_security_group_association" "sga" {
   subnet_id                 = azurerm_subnet.aks-data-plane.id
   network_security_group_id = azurerm_network_security_group.sg.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "bastion_nsg_association" {
+  subnet_id                 = azurerm_subnet.bastion.id
+  network_security_group_id = azurerm_network_security_group.bastion_nsg.id
 }
 
 # Network contributor role assignments

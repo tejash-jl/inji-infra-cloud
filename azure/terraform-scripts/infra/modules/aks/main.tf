@@ -7,10 +7,11 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   location            = var.resource_group.location
   resource_group_name = var.resource_group.name
   dns_prefix          = random_pet.azurerm_kubernetes_cluster_dns_prefix.id
+  sku_tier            = Free
 
   default_node_pool {
     name           = "default"
-    node_count     = 3
+    node_count     = 2
     vm_size        = "Standard_B4als_v2"
     vnet_subnet_id = var.subnet_id
     temporary_name_for_rotation = "old"
@@ -38,13 +39,6 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     service_cidr      = "10.0.0.0/16"
     load_balancer_sku = "standard"
   }
-
-
-
-//  api_server_access_profile {
-//    #    authorized_ip_ranges     = var.api_server_allowed_cidr_blocks
-//  }
-
   tags = {
     Environment = var.env
   }
