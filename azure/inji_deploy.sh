@@ -158,7 +158,8 @@ install_esignet() {
   helm repo add strimzi https://strimzi.io/charts/
   helm repo add mosip https://mosip.github.io/mosip-helm
 
-  helm install redis oci://registry-1.docker.io/bitnamicharts/redis -n redis --create-namespace --set auth.enabled=false --set architecture=standalone
+  helm install redis oci://registry-1.docker.io/bitnamicharts/redis -n redis --create-namespace --set auth.enabled=false --set architecture=standalone --set auth.usePasswordFiles=false
+ 
   helm install strimzi strimzi/strimzi-kafka-operator -n kafka --create-namespace
 
   kubectl apply -f deployments/configs/kafka.yml -n kafka
